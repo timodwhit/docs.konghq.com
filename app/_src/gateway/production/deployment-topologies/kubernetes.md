@@ -3,10 +3,10 @@ title: Kubernetes Topologies
 content_type: explanation
 ---
 
-Running {{ site.base_gateway }} on Kubernetes is a common deployment pattern. When running on Kubernetes, there are two configuration options available:
+Running {{ site.base_gateway }} on Kubernetes is a common deployment pattern. When running on Kubernetes, there are two deployment modes available:
 
-* [Hybrid mode](#hybrid-mode), with a CP (either on-prem or via Konnect) and multiple DPs
-* [DB-less mode](/gateway/{{ page.release }}/production/deployment-topologies/db-less-and-declarative-config/), configured using CRDs and the {{ site.kic_product_name }}
+* [Hybrid mode](#hybrid-mode): with an on-prem or Konnect based Control Plane (CP) and multiple Data Planes (DP)
+* [DB-less mode](/gateway/{{ page.release }}/production/deployment-topologies/db-less-and-declarative-config/): Uses Kubernetes Custom Resource Definitions (CRDs) with the {{ site.kic_product_name }} to configure the gateway
 
 Running Kong in Hybrid mode is commonly referred to as "Kong _on_ Kubernetes". Running Kong with {{ site.kic_product_name }} is commonly referred to as "Kong _for_ Kubernetes", as it provides a Kubernetes native way of configuring Kong entities using {{ site.kic_product_name }}.
 
@@ -17,15 +17,15 @@ Running Kong in Hybrid mode is commonly referred to as "Kong _on_ Kubernetes". R
 
 Deploying {{ site.base_gateway }} in [Hybrid mode](/gateway/{{ page.release }}/production/deployment-topologies/hybrid-mode/) uses Kubernetes as a runtime for your data planes. 
 
-Configuring Kong on Kubernetes is identical to deploying Kong running on a virtual machine or bare metal. The Data Planes connect to a Control Plane (Konnect, or an in-cluster control plane) and receive configuration from the CP. Configuration is managed using the UI, the Kong Admin API or via [deck](/deck/latest/).
+Configuring Kong on Kubernetes is identical to deploying Kong running on a virtual machine or bare metal. The DPs connect to a CP (Konnect, or in-cluster) to receive the configuration. Configuration is managed using the UI, the Kong Admin API or via [deck](/deck/latest/).
 
 We provide detailed [installation instructions](/gateway/{{ page.release }}/install/kubernetes/proxy/) for Hybrid mode, including ingress definitions for EKS, GKE and AKS.
 
 ## DB-less mode with {{ site.kic_product_name }}
 
-{{ site.kic_product_name }} provides a Kubernetes native way to configure {{ site.base_gateway }} using custom resource definitions (CRDs). In this deployment pattern, {{ site.base_gateway }} is deployed in DB-less mode, where the data plane configuration is held in memory.
+{{ site.kic_product_name }} provides a Kubernetes native way to configure {{ site.base_gateway }} using CRDs. In this deployment pattern, {{ site.base_gateway }} is deployed in DB-less mode, where the DP configuration is held in memory.
 
-Operators configure {{ site.base_gateway }} using standard CRDs such as `Ingress` and `HTTPRoute`, and {{ site.kic_product_name }} translates those resources in to Kong entities before sending a request to update the running data plane configurations.
+Operators configure {{ site.base_gateway }} using standard CRDs such as `Ingress` and `HTTPRoute`, and {{ site.kic_product_name }} translates those resources in to Kong entities before sending a request to update the running DP configurations.
 
 In this topology, the Kubernetes API server is your source of truth. {{ site.kic_product_name }} reads resources stored on the API server and translates them in to a valid Kong configuration object. You can think of {{ site.kic_product_name }} as the control plane for your DB-less data planes.
 
